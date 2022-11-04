@@ -1,0 +1,4 @@
+<map id="Communication::Client::writeS" name="Communication::Client::writeS">
+<area shape="rect" id="node1" title="writeS write the com interface." alt="" coords="5,5,176,47"/>
+<area shape="rect" id="node2" href="$df/dcd/class_communication_1_1_client.html#a7020654cbb2e6f707fe637fc84d8328c" title="CRC Compute and return the CRC over the n first bytes of buf." alt="" coords="224,13,431,39"/>
+</map>

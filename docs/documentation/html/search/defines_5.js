@@ -1,0 +1,10 @@
+var searchData=
+[
+  ['liblsl_5fc_5fapi_884',['LIBLSL_C_API',['../da/d53/built__lsl_2include_2lsl__c_8h.html#aafd0ef1813e8be84a1420c4f1df64615',1,'LIBLSL_C_API():&#160;lsl_c.h'],['../db/d8d/com__client_2tool__lib_2built__lsl_2include_2lsl__c_8h.html#aafd0ef1813e8be84a1420c4f1df64615',1,'LIBLSL_C_API():&#160;lsl_c.h']]],
+  ['liblsl_5fcompile_5fheader_5fversion_885',['LIBLSL_COMPILE_HEADER_VERSION',['../da/d53/built__lsl_2include_2lsl__c_8h.html#a8575e959edab9eb4be131982dd260acd',1,'LIBLSL_COMPILE_HEADER_VERSION():&#160;lsl_c.h'],['../db/d8d/com__client_2tool__lib_2built__lsl_2include_2lsl__c_8h.html#a8575e959edab9eb4be131982dd260acd',1,'LIBLSL_COMPILE_HEADER_VERSION():&#160;lsl_c.h']]],
+  ['log_886',['LOG',['../df/df2/str_a_n_s_iseq_8hpp.html#a3577749fb48d57a158b8ac1a0b3ab57e',1,'strANSIseq.hpp']]],
+  ['lsl_5fdeduced_5ftimestamp_887',['LSL_DEDUCED_TIMESTAMP',['../da/d53/built__lsl_2include_2lsl__c_8h.html#a5282bfa3df16b30eb308375a45062cfc',1,'LSL_DEDUCED_TIMESTAMP():&#160;lsl_c.h'],['../db/d8d/com__client_2tool__lib_2built__lsl_2include_2lsl__c_8h.html#a5282bfa3df16b30eb308375a45062cfc',1,'LSL_DEDUCED_TIMESTAMP():&#160;lsl_c.h']]],
+  ['lsl_5fforever_888',['LSL_FOREVER',['../da/d53/built__lsl_2include_2lsl__c_8h.html#a0416859f36f40e91d12cd07aafb34eaa',1,'LSL_FOREVER():&#160;lsl_c.h'],['../db/d8d/com__client_2tool__lib_2built__lsl_2include_2lsl__c_8h.html#a0416859f36f40e91d12cd07aafb34eaa',1,'LSL_FOREVER():&#160;lsl_c.h']]],
+  ['lsl_5firregular_5frate_889',['LSL_IRREGULAR_RATE',['../da/d53/built__lsl_2include_2lsl__c_8h.html#ab46eddb74ca540d49497330b132dbff1',1,'LSL_IRREGULAR_RATE():&#160;lsl_c.h'],['../db/d8d/com__client_2tool__lib_2built__lsl_2include_2lsl__c_8h.html#ab46eddb74ca540d49497330b132dbff1',1,'LSL_IRREGULAR_RATE():&#160;lsl_c.h']]],
+  ['lsl_5fno_5fpreference_890',['LSL_NO_PREFERENCE',['../da/d53/built__lsl_2include_2lsl__c_8h.html#ab94fcb1a355dbfc31f9dd3e0d699e6d6',1,'LSL_NO_PREFERENCE():&#160;lsl_c.h'],['../db/d8d/com__client_2tool__lib_2built__lsl_2include_2lsl__c_8h.html#ab94fcb1a355dbfc31f9dd3e0d699e6d6',1,'LSL_NO_PREFERENCE():&#160;lsl_c.h']]]
+];

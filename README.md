@@ -21,3 +21,4 @@ to get the demonstration app usage.
 
 # Example
 Open the ![main.cpp](cpp:src/main.cpp) file to get an example how to use the lib.
+sudo apt install linuxptp chrony ethtool

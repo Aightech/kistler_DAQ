@@ -1,0 +1,5 @@
+<map id="Kistler::API::Trigger::duration" name="Kistler::API::Trigger::duration">
+<area shape="rect" id="node1" title="Set the Trigger object as a duration type: stop if after the given amount of time." alt="" coords="388,5,533,47"/>
+<area shape="rect" id="node2" href="$da/d97/class_kistler_1_1_d_a_q.html#a291e83bbb30446417bfc54f0b02bf41e" title="Configure the DAQ." alt="" coords="192,13,340,39"/>
+<area shape="rect" id="node3" href="$da/d97/class_kistler_1_1_d_a_q.html#a1c97f3c5178041e0bf2a836eead0bc8c" title=" " alt="" coords="5,13,144,39"/>
+</map>

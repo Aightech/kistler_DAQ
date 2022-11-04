@@ -1,0 +1,10 @@
+<map id="Kistler::DAQ::stop_streaming" name="Kistler::DAQ::stop_streaming">
+<area shape="rect" id="node1" title="Stop the streaming thread." alt="" coords="5,27,143,69"/>
+<area shape="rect" id="node2" href="$da/d94/class_kistler_1_1_a_p_i.html#a5410196834e57bb4376380d609390e25" title="Send a STOP request to the DAQ." alt="" coords="191,35,320,61"/>
+<area shape="rect" id="node3" href="$dc/d44/class_e_s_c_1_1_c_l_i.html#abe1e5a3cc2cbd55c0704e9b13842e436" title=" " alt="" coords="394,5,509,32"/>
+<area shape="rect" id="node5" href="$d7/d60/class_communication_1_1_h_t_t_p__client.html#a241e78ccad7bcbc7597cb2dde7d7e402" title=" " alt="" coords="368,57,535,98"/>
+<area shape="rect" id="node4" href="$d2/d52/namespace_e_s_c.html#a1ab0660788056c78944278261498664a" title=" " alt="" coords="615,5,721,32"/>
+<area shape="rect" id="node6" href="$df/dcd/class_communication_1_1_client.html#a73fec58648938364cd65d690f50bd7ec" title="readS read the com inmterface." alt="" coords="583,57,753,98"/>
+<area shape="rect" id="node8" href="$df/dcd/class_communication_1_1_client.html#a32bd631bcb3b0a3476b146a0cc49332d" title="writeS write the com interface." alt="" coords="583,122,753,163"/>
+<area shape="rect" id="node7" href="$df/dcd/class_communication_1_1_client.html#a7020654cbb2e6f707fe637fc84d8328c" title="CRC Compute and return the CRC over the n first bytes of buf." alt="" coords="801,97,1008,124"/>
+</map>

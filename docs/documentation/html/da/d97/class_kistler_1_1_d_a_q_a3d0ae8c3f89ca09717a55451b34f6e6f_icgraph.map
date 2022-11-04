@@ -1,0 +1,6 @@
+<map id="Kistler::DAQ::read_event" name="Kistler::DAQ::read_event">
+<area shape="rect" id="node1" title="Read a subframe as an event (type 0 in header)" alt="" coords="609,5,748,47"/>
+<area shape="rect" id="node2" href="$da/d97/class_kistler_1_1_d_a_q.html#a4f89e1c93f34ce2b85fe0e10287b8165" title="Thread streaming LSL samples." alt="" coords="379,5,561,47"/>
+<area shape="rect" id="node3" href="$da/d97/class_kistler_1_1_d_a_q.html#a5a7c06429dcad460b083b5f2a2bbda5a" title="Start a LSL streaming thread." alt="" coords="192,5,331,47"/>
+<area shape="rect" id="node4" href="$da/d97/class_kistler_1_1_d_a_q.html#a1c97f3c5178041e0bf2a836eead0bc8c" title=" " alt="" coords="5,13,144,39"/>
+</map>

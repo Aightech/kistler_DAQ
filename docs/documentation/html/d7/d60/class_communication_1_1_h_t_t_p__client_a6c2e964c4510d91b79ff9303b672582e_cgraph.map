@@ -1,0 +1,6 @@
+<map id="Communication::HTTP_client::get" name="Communication::HTTP_client::get">
+<area shape="rect" id="node1" title=" " alt="" coords="5,39,172,80"/>
+<area shape="rect" id="node2" href="$df/dcd/class_communication_1_1_client.html#a73fec58648938364cd65d690f50bd7ec" title="readS read the com inmterface." alt="" coords="220,5,391,47"/>
+<area shape="rect" id="node4" href="$df/dcd/class_communication_1_1_client.html#a32bd631bcb3b0a3476b146a0cc49332d" title="writeS write the com interface." alt="" coords="220,71,391,112"/>
+<area shape="rect" id="node3" href="$df/dcd/class_communication_1_1_client.html#a7020654cbb2e6f707fe637fc84d8328c" title="CRC Compute and return the CRC over the n first bytes of buf." alt="" coords="439,46,645,73"/>
+</map>

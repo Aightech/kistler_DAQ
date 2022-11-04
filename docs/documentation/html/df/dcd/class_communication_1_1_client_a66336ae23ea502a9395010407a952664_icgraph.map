@@ -1,0 +1,9 @@
+<map id="Communication::Client::open_connection" name="Communication::Client::open_connection">
+<area shape="rect" id="node1" title="open_connection Open the connection the serial or network or interface" alt="" coords="631,64,801,105"/>
+<area shape="rect" id="node2" href="$da/d97/class_kistler_1_1_d_a_q.html#a4f89e1c93f34ce2b85fe0e10287b8165" title="Thread streaming LSL samples." alt="" coords="400,5,583,47"/>
+<area shape="rect" id="node5" href="$d4/d7c/lib_2com__client_2src_2main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="464,71,519,98"/>
+<area shape="rect" id="node6" href="$d7/d60/class_communication_1_1_h_t_t_p__client.html#a67973a5bc8e92122bc5f98c95990bca7" title=" " alt="" coords="400,123,583,164"/>
+<area shape="rect" id="node3" href="$da/d97/class_kistler_1_1_d_a_q.html#a5a7c06429dcad460b083b5f2a2bbda5a" title="Start a LSL streaming thread." alt="" coords="203,20,341,61"/>
+<area shape="rect" id="node4" href="$da/d97/class_kistler_1_1_d_a_q.html#a1c97f3c5178041e0bf2a836eead0bc8c" title=" " alt="" coords="5,71,144,98"/>
+<area shape="rect" id="node7" href="$da/d97/class_kistler_1_1_d_a_q.html#ac5dc9fa5e3a40556eb6879b071b269be" title="Connect to the DAQ." alt="" coords="192,101,352,127"/>
+</map>

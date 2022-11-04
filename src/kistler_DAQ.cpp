@@ -3,203 +3,201 @@
 namespace Kistler
 {
 
-API::Trigger &
-API::Trigger::request()
+DAQ::DAQ(int verbose)
+    : ESC::CLI(verbose, "Kistler_DAQ"), m_api(verbose - 1),
+      m_stream(verbose - 1)
 {
-    triggerUpon = "request";
-    return *this;
+    this->connect("192.168.0.100");
+    this->config(2, 10000, 20000000000);
+    this->start_streaming();
 };
-
-API::Trigger &
-API::Trigger::event(int nb_thresholds, bool meas, int nb_channel, bool falling)
+DAQ::~DAQ()
 {
-    triggerUpon = "event";
-    nb_trig = nb_thresholds;
-    type = ((meas) ? "meas" : "virt");
-    nb_chan = nb_channel;
-    edge = (falling) ? "falling" : "rising";
-    return *this;
-};
-
-API::Trigger &
-API::Trigger::time(uint64_t t_s, uint32_t t_ns)
-{
-    triggerUpon = "time";
-    time_s = t_s;
-    time_ns = t_ns;
-    return *this;
-};
-
-API::Trigger &
-API::Trigger::duration(uint64_t duration_ns)
-{
-    triggerUpon = "duration";
-    duration_time = duration_ns;
-    return *this;
-}
-
-API::Trigger &
-API::Trigger::preTrigger(uint64_t nb_samples)
-{
-    pre_trig = nb_samples;
-    return *this;
-};
-
-API::Trigger &
-API::Trigger::postTrigger(uint64_t nb_samples)
-{
-    post_trig = nb_samples;
-    return *this;
-};
-
-std::string
-API::Trigger::str()
-{
-    std::string ret = "{ \"triggerUpon\": \"" + triggerUpon + "\"";
-    if(triggerUpon == "event")
+    if(m_streaming_thread != nullptr)
     {
-        ret += ", \"event\": \"skybase.sigmon.threshold-";
-        ret += std::to_string(nb_trig) + "_" + type + "-";
-        ret += std::to_string(nb_chan) + "_" + edge + "\"";
+        m_streaming_thread->join();
+        delete m_streaming_thread;
     }
-    if(triggerUpon == "duration")
-    {
-        ret += ", \"duration\": " + std::to_string(duration_time);
-    }
-    if(triggerUpon == "time")
-    {
-        ret += ", \"time\": \"" + std::to_string(time_s) + "." +
-               std::to_string(time_ns) + "\"";
-    }
-    if(pre_trig > 0)
-    {
-        ret += ", \"preTrigger\": " + std::to_string(pre_trig);
-    }
-    ret += " }";
-    return ret;
-};
-
-API::API(std::string ip, int verbose)
-    : ESC::CLI(verbose, "Kistler_API"), Communication::HTTP_client(
-                                            ip, 80, verbose - 1){};
-
-bool
-API::check_msg_error(std::string rep)
-{
-    std::string key = "\"result\" : ";
-    int res = std::stoi(rep.substr(rep.find(key) + key.size()));
-    if(res ==0)
-      return false;
-    else
-      {
-	 key = "\"error\" : ";
-	 std::string err = rep.substr(rep.find(key + "\"") + key.size() + 1);
-	 err = err.substr(0, err.find("\""));
-	 logln("<"+ESC::fstr("Error", {ESC::FG_RED})+"> " + err,true);
-	 
-      }
-    return true;
-}
-
-void
-API::enable_config(bool enable)
-{
-    m_content = "{ \"measurementId\": " + std::to_string(m_measurement_id);
-    m_content += ", \"enabled\" : ";
-    m_content += (enable ? "true" : "false");
-    m_content += " }";
-    this->post("/api/daq/measurement/enabled/set", m_content.c_str());
-    logln("Measurement " + std::to_string(m_measurement_id) +
-          " enabled: " + (enable ? "true" : "false"));
 };
 
 void
-API::set_config(Trigger &start_trigger, Trigger &stop_trigger)
+DAQ::connect(std::string ip)
 {
-
-    this->enable_config(false);
-
-    m_content = "{ \"measurementId\": " + std::to_string(m_measurement_id);
-    m_content += ", \"startTrigger\": " + start_trigger.str();
-    m_content += ", \"stopTrigger\": " + stop_trigger.str();
-    m_content += ", \"signalProvider\" : \"daq-provider\""
-                 ", \"enabled\" : true}";
-
-    logln("New configuration: " + m_content);
-    this->post("/api/daq/measurement/configuration/set", m_content.c_str());
-};
-
-std::string
-API::new_client()
-{
-    std::string rep = this->post("/api/daq/stream/register");
-    std::string key = "\"clientId\" : ";
-    std::string client_id = rep.substr(rep.find(key + "\"") + key.size() + 1);
-    client_id = client_id.substr(0, client_id.find("\""));
-
-    logln("New client id: " + client_id, true);
-    m_client_ids.push_back(client_id);
-    return m_client_ids[m_client_ids.size() - 1];
+    m_ip = ip;
+    logln("Connecting to " + m_ip, true);
+    m_api.open_connection(ip, 80); //start the conn. with kistler REST API
+    logln("ok", true);
 };
 
 void
-API::delete_client(std::string client_id)
+DAQ::config(uint64_t nb_ch,
+            uint64_t sps,
+            uint64_t dur_ns,
+            uint64_t pre_trig,
+            uint64_t post_trig,
+            uint16_t f_size,
+            int port)
 {
-    if(client_id == "")
-        client_id = m_client_ids[m_client_ids.size() - 1];
+    m_nb_channels = nb_ch;
+    m_sampling_rate = sps;
+    m_measurement_duration = dur_ns;
+    m_pre_trig = pre_trig;
+    m_post_trig = post_trig;
+    m_frame_size = f_size;
+    m_streaming_port = port;
 
-    m_content = "{ \"clientId\": \"" + client_id + "\" }";
-    this->post("/api/daq/stream/unregister", m_content.c_str());
-    logln("Client " + client_id + " deleted", true);
+    // start when start request is sent via start()
+    API::Trigger start_trigger = API::Trigger().request();
+    API::Trigger stop_trigger;
+    if(dur_ns > 0) // stop after duration_ns in nanoseconds
+        stop_trigger.duration(dur_ns);
+    else // stop when stop request is sent via stop()
+        stop_trigger.request();
+    if(pre_trig > 0) // time (in ns) to record before the start trigger
+        start_trigger.preTrigger(pre_trig);
+    if(post_trig > 0) // time (in ns) to record after the stop trigger
+        stop_trigger.postTrigger(post_trig);
+
+    logln("Configuring DAQ...", true);
+
+    m_api.set_config(start_trigger, stop_trigger);
+};
+
+void
+DAQ::start_streaming()
+{
+    //start the streaming threads
+    m_streaming_thread = new std::thread(&DAQ::_streaming_thread, this);
+};
+
+void
+DAQ::_streaming_thread()
+{
+    try
+    {
+        lsl_streaminfo info =
+            lsl_create_streaminfo("Kistler", "measurement", m_nb_channels,
+                                  m_sampling_rate, cft_float32, "Kistleruid");
+        lsl_outlet outlet = lsl_create_outlet(info, m_frame_size, 360);
+
+        m_c_id = m_api.new_client();
+        m_s_id = m_api.open_stream(m_streaming_port, m_c_id);
+        m_stream.open_connection(Communication::Client::Mode::TCP,
+                                 "192.168.0.100", m_streaming_port);
+        m_api.start();
+
+        uint16_t type;
+        uint32_t size;
+        uint64_t timestamp_s;
+        uint32_t timestamp_ns;
+        float *data = new float[m_nb_channels * m_frame_size];
+        int total_samples = 0;
+        m_is_streaming = true;
+        logln("Start streaming");
+        for(; m_is_streaming;)
+        {
+            this->read_header(&type, &size);
+            if(type == 0)//it is an event subframe
+            {
+                this->read_event(size);
+                break;
+            }
+            else// is is a data subframe 
+            {
+                total_samples += this->read_measurement(size, &timestamp_s,
+                                                        &timestamp_ns, &data);
+                lsl_push_chunk_ft(outlet, data, m_nb_channels * m_frame_size,
+                                  (double)timestamp_s +
+                                      (double)timestamp_ns / 1e9);
+            }
+        }
+        logln("Total samples: " + std::to_string(total_samples));
+        lsl_destroy_outlet(outlet);
+        m_stream.close_connection();
+        m_api.stop();
+        delete[] data;
+    }
+    catch(std::string &msg)
+    {
+        std::cout << msg << std::endl;
+    }
+    m_api.close_stream(m_s_id, m_c_id);
+    m_api.delete_client(m_c_id);
+};
+  
+void
+DAQ::stop_streaming(bool forced)
+{
+    m_api.stop(); //send stop request via rest api
+    if(forced)
+      m_is_streaming = false;
+    if(m_streaming_thread != nullptr)
+    {
+        m_streaming_thread->join();
+        delete m_streaming_thread;
+    }
+};
+
+void
+DAQ::read_header(uint16_t *type, uint32_t *size)
+{
+    int n;
+    uint8_t buff[16];
+    n = m_stream.readS(buff, 16);
+    while(n < 16) n += m_stream.readS(buff + n, 16 - n);
+    *type = *(uint16_t *)(buff + 2);
+    *size = *(uint32_t *)(buff + 4) - 16;
+    //the rest is redundant information
 };
 
 int
-API::open_stream(int port, std::string client_id)
+DAQ::read_event(uint32_t size)
 {
-    if(client_id == "")
-        client_id = m_client_ids[m_client_ids.size() - 1];
 
-    m_content = "{ \"measurements\": [ { \"measurementId\":1,";
-    m_content += "\"scansPerFrame\": 1024 }],";
-    m_content += "\"port\": " + std::to_string(port) + ",";
-    m_content += " \"clientId\": \"" + client_id + "\" }";
-    std::string rep = this->post("/api/daq/stream/open", m_content.c_str());
-    std::string key = "\"streamId\" : ";
+    std::string err_description[] = {ESC::fstr("ERROR", {ESC::FG_RED}),
+                                     ESC::fstr("WARNING", {ESC::FG_YELLOW}),
+                                     ESC::fstr("STATUS", {ESC::FG_GREEN}),
+                                     ESC::fstr("INFO", {ESC::FG_BLUE})};
+    std::string code_description[] = {"CLOSED", "OVERRUN", "TIMESKEW",
+                                      "MEASUREMENT SUBSYSTEM RECONFIGURED",
+                                      "MEASUREMENT STOPPED"};
+    int n;
+    uint8_t buff[size];
+    n = m_stream.readS(buff, size);
+    while(n < size) n += m_stream.readS(buff + n, size - n);
 
-    int streamId = std::stoi(rep.substr(rep.find(key) + key.size()));
-    m_stream_ids.push_back(streamId);
-    logln("New stream id: " + std::to_string(streamId), true);
-    return streamId;
+    uint8_t *level = buff;
+    //uint8_t *facility = buff + 1;
+    uint16_t *code = (uint16_t *)(buff + 2);
+
+    logln("<" + std::string(err_description[*level]) + "> " +
+              std::string(code_description[*code]),
+          true);
+    return *code;
 };
 
-void
-API::close_stream(int streamId = -1, std::string client_id)
+uint32_t
+DAQ::read_measurement(uint32_t size,
+                      uint64_t *init_timestamp_s,
+                      uint32_t *init_timestamp_ns,
+                      float **data)
 {
-    if(streamId == -1)
-        streamId = m_stream_ids[m_stream_ids.size() - 1];
-    if(client_id == "")
-        client_id = m_client_ids[m_client_ids.size() - 1];
+    int n;
+    uint8_t buff[12];
+    uint32_t nb_samples = (size - 12) / 4 / m_nb_channels;
 
-    m_content = "{ \"clientId\": \"" + client_id + "\",";
-    m_content += "\"streamId\": " + std::to_string(streamId) + " }";
-    std::string rep = this->post("/api/daq/stream/close", m_content.c_str());
-    logln("Close stream id: " + std::to_string(streamId), true);
-};
+    //read timestamp
+    n = m_stream.readS(buff, 12);
+    while(n < 12) n += m_stream.readS(buff + n, 12 - n);
+    *init_timestamp_s = *(uint64_t *)(buff);
+    *init_timestamp_ns = *(uint32_t *)(buff + 8);
 
-void
-API::start()
-{
-    m_content = "{ \"measurementId\": 1}";
-    this->post("/api/daq/measurement/start", m_content.c_str());
-    logln("Started measurement stream", true);
-};
+    //read data
+    size -= 12;
+    n = m_stream.readS((uint8_t *)*data, size);
+    while(n < size) n += m_stream.readS((uint8_t *)*data + n, size - n);
 
-void
-API::stop()
-{
-    m_content = "{ \"measurementId\": 1}";
-    this->post("/api/daq/measurement/stop", m_content.c_str());
-    logln("Stoped measurement stream", true);
+    return nb_samples;
 };
 
 }; // namespace Kistler

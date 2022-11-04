@@ -1,0 +1,17 @@
+<map id="Communication::HTTP_client::post" name="Communication::HTTP_client::post">
+<area shape="rect" id="node1" title=" " alt="" coords="837,247,1004,288"/>
+<area shape="rect" id="node2" href="$da/d94/class_kistler_1_1_a_p_i.html#a46c24eb334e1af47b3b17408918c5491" title="Close a streaming port." alt="" coords="637,123,771,164"/>
+<area shape="rect" id="node6" href="$da/d94/class_kistler_1_1_a_p_i.html#a5a1c3d8d1e5b6f496726293f09cc91c9" title="Unregister a client." alt="" coords="633,188,775,229"/>
+<area shape="rect" id="node7" href="$da/d94/class_kistler_1_1_a_p_i.html#aeb67a2504717300d59713593da6966e6" title="Enable or disable the measurement configuration of the DAQ. To set a new configuration,..." alt="" coords="631,5,777,47"/>
+<area shape="rect" id="node8" href="$da/d94/class_kistler_1_1_a_p_i.html#aadc38197a3536983e07d1687fbe0e1d0" title="Set the configuration of the DAQ." alt="" coords="396,71,563,98"/>
+<area shape="rect" id="node10" href="$da/d94/class_kistler_1_1_a_p_i.html#ad3884e4543f20438744b31b5f1e2cb41" title="Get the value of a parameter of the DAQ via the REST API." alt="" coords="619,254,789,281"/>
+<area shape="rect" id="node11" href="$da/d94/class_kistler_1_1_a_p_i.html#a0e3329ec10d12ef325520b4c106f8d83" title="Register a new client and get its ID." alt="" coords="619,305,789,331"/>
+<area shape="rect" id="node12" href="$da/d94/class_kistler_1_1_a_p_i.html#a098b5c9b8d99e1759efba5ef119475d9" title="Open a streaming port. The port will be closed if no connection is made within 30 seconds." alt="" coords="637,356,771,397"/>
+<area shape="rect" id="node13" href="$da/d94/class_kistler_1_1_a_p_i.html#a1241535349db9c80adea109500ba7c79" title="Send a START request to the DAQ." alt="" coords="639,422,769,449"/>
+<area shape="rect" id="node14" href="$da/d94/class_kistler_1_1_a_p_i.html#a5410196834e57bb4376380d609390e25" title="Send a STOP request to the DAQ." alt="" coords="639,473,769,499"/>
+<area shape="rect" id="node3" href="$da/d97/class_kistler_1_1_d_a_q.html#a4f89e1c93f34ce2b85fe0e10287b8165" title="Thread streaming LSL samples." alt="" coords="388,297,571,339"/>
+<area shape="rect" id="node4" href="$da/d97/class_kistler_1_1_d_a_q.html#a5a7c06429dcad460b083b5f2a2bbda5a" title="Start a LSL streaming thread." alt="" coords="197,253,335,295"/>
+<area shape="rect" id="node5" href="$da/d97/class_kistler_1_1_d_a_q.html#a1c97f3c5178041e0bf2a836eead0bc8c" title=" " alt="" coords="5,231,144,258"/>
+<area shape="rect" id="node9" href="$da/d97/class_kistler_1_1_d_a_q.html#a291e83bbb30446417bfc54f0b02bf41e" title="Configure the DAQ." alt="" coords="192,115,340,142"/>
+<area shape="rect" id="node15" href="$da/d97/class_kistler_1_1_d_a_q.html#a95fa86f19c6c063f55b657a7f83270da" title="Stop the streaming thread." alt="" coords="411,465,548,507"/>
+</map>

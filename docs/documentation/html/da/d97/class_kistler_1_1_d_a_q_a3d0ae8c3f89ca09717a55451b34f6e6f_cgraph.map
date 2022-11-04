@@ -1,0 +1,8 @@
+<map id="Kistler::DAQ::read_event" name="Kistler::DAQ::read_event">
+<area shape="rect" id="node1" title="Read a subframe as an event (type 0 in header)" alt="" coords="5,49,144,90"/>
+<area shape="rect" id="node2" href="$d2/d52/namespace_e_s_c.html#a080ff5f5b8a2ed3567a541acfa69a425" title="fstr Prints a formated string." alt="" coords="239,5,316,32"/>
+<area shape="rect" id="node3" href="$dc/d44/class_e_s_c_1_1_c_l_i.html#abe1e5a3cc2cbd55c0704e9b13842e436" title=" " alt="" coords="220,56,335,83"/>
+<area shape="rect" id="node5" href="$df/dcd/class_communication_1_1_client.html#a73fec58648938364cd65d690f50bd7ec" title="readS read the com inmterface." alt="" coords="192,107,363,149"/>
+<area shape="rect" id="node4" href="$d2/d52/namespace_e_s_c.html#a1ab0660788056c78944278261498664a" title=" " alt="" coords="461,56,567,83"/>
+<area shape="rect" id="node6" href="$df/dcd/class_communication_1_1_client.html#a7020654cbb2e6f707fe637fc84d8328c" title="CRC Compute and return the CRC over the n first bytes of buf." alt="" coords="411,115,617,141"/>
+</map>

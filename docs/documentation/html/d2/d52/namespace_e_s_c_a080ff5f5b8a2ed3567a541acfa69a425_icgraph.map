@@ -1,0 +1,25 @@
+<map id="ESC::fstr" name="ESC::fstr">
+<area shape="rect" id="node1" title="fstr Prints a formated string." alt="" coords="1060,582,1137,609"/>
+<area shape="rect" id="node2" href="$da/d94/class_kistler_1_1_a_p_i.html#a19649fd0c024f8a66eaff543114532e9" title="Check the satue of the reply (result:0 =&gt; OK)" alt="" coords="857,247,996,288"/>
+<area shape="rect" id="node15" href="$dc/d44/class_e_s_c_1_1_c_l_i.html#a47b6c71a4c59354a3f9c0cd9bd011807" title=" " alt="" coords="875,465,978,491"/>
+<area shape="rect" id="node16" href="$df/dcd/class_communication_1_1_client.html#aa448a9277e9bed8326f74ad81062ab77" title=" " alt="" coords="841,516,1012,557"/>
+<area shape="rect" id="node19" href="$d2/d52/namespace_e_s_c.html#a6f0f9c5cc6b334d09b6da6834c02af16" title=" " alt="" coords="881,582,973,609"/>
+<area shape="rect" id="node20" href="$dc/d44/class_e_s_c_1_1_c_l_i.html#aee4e23e87ebd3cf3909f1760a5fda04b" title=" " alt="" coords="856,633,997,659"/>
+<area shape="rect" id="node22" href="$d8/d00/lib_2com__client_2lib_2str_a_n_s_iseq_2src_2main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="899,683,954,710"/>
+<area shape="rect" id="node23" href="$da/d97/class_kistler_1_1_d_a_q.html#a3d0ae8c3f89ca09717a55451b34f6e6f" title="Read a subframe as an event (type 0 in header)" alt="" coords="857,735,996,776"/>
+<area shape="rect" id="node3" href="$da/d94/class_kistler_1_1_a_p_i.html#a46c24eb334e1af47b3b17408918c5491" title="Close a streaming port." alt="" coords="639,123,773,164"/>
+<area shape="rect" id="node7" href="$da/d94/class_kistler_1_1_a_p_i.html#a5a1c3d8d1e5b6f496726293f09cc91c9" title="Unregister a client." alt="" coords="635,188,777,229"/>
+<area shape="rect" id="node8" href="$da/d94/class_kistler_1_1_a_p_i.html#aeb67a2504717300d59713593da6966e6" title="Enable or disable the measurement configuration of the DAQ. To set a new configuration,..." alt="" coords="633,5,779,47"/>
+<area shape="rect" id="node9" href="$da/d94/class_kistler_1_1_a_p_i.html#aadc38197a3536983e07d1687fbe0e1d0" title="Set the configuration of the DAQ." alt="" coords="396,71,563,98"/>
+<area shape="rect" id="node11" href="$da/d94/class_kistler_1_1_a_p_i.html#ad3884e4543f20438744b31b5f1e2cb41" title="Get the value of a parameter of the DAQ via the REST API." alt="" coords="621,254,791,281"/>
+<area shape="rect" id="node12" href="$da/d94/class_kistler_1_1_a_p_i.html#a0e3329ec10d12ef325520b4c106f8d83" title="Register a new client and get its ID." alt="" coords="621,305,791,331"/>
+<area shape="rect" id="node13" href="$da/d94/class_kistler_1_1_a_p_i.html#a098b5c9b8d99e1759efba5ef119475d9" title="Open a streaming port. The port will be closed if no connection is made within 30 seconds." alt="" coords="639,356,773,397"/>
+<area shape="rect" id="node14" href="$da/d94/class_kistler_1_1_a_p_i.html#a1241535349db9c80adea109500ba7c79" title="Send a START request to the DAQ." alt="" coords="641,422,771,449"/>
+<area shape="rect" id="node4" href="$da/d97/class_kistler_1_1_d_a_q.html#a4f89e1c93f34ce2b85fe0e10287b8165" title="Thread streaming LSL samples." alt="" coords="388,327,571,368"/>
+<area shape="rect" id="node5" href="$da/d97/class_kistler_1_1_d_a_q.html#a5a7c06429dcad460b083b5f2a2bbda5a" title="Start a LSL streaming thread." alt="" coords="197,283,335,324"/>
+<area shape="rect" id="node6" href="$da/d97/class_kistler_1_1_d_a_q.html#a1c97f3c5178041e0bf2a836eead0bc8c" title=" " alt="" coords="5,261,144,287"/>
+<area shape="rect" id="node10" href="$da/d97/class_kistler_1_1_d_a_q.html#a291e83bbb30446417bfc54f0b02bf41e" title="Configure the DAQ." alt="" coords="192,115,340,142"/>
+<area shape="rect" id="node17" href="$d7/d60/class_communication_1_1_h_t_t_p__client.html#a9cbcd819dda4fc2fd0c4295bce974dff" title=" " alt="" coords="623,524,789,565"/>
+<area shape="rect" id="node18" href="$dc/db1/class_communication_1_1_server.html#aef74c77dc02436ee1dc6d16310837b12" title=" " alt="" coords="619,589,793,631"/>
+<area shape="rect" id="node21" href="$dc/db1/class_communication_1_1_server.html#a3571bd6913a55394cde0ced0f404685d" title=" " alt="" coords="619,655,793,696"/>
+</map>

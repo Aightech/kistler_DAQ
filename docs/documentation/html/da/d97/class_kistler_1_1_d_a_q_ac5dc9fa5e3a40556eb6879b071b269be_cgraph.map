@@ -1,0 +1,7 @@
+<map id="Kistler::DAQ::connect" name="Kistler::DAQ::connect">
+<area shape="rect" id="node1" title="Connect to the DAQ." alt="" coords="5,35,165,61"/>
+<area shape="rect" id="node2" href="$dc/d44/class_e_s_c_1_1_c_l_i.html#abe1e5a3cc2cbd55c0704e9b13842e436" title=" " alt="" coords="247,5,362,32"/>
+<area shape="rect" id="node4" href="$d7/d60/class_communication_1_1_h_t_t_p__client.html#a67973a5bc8e92122bc5f98c95990bca7" title=" " alt="" coords="213,57,396,98"/>
+<area shape="rect" id="node3" href="$d2/d52/namespace_e_s_c.html#a1ab0660788056c78944278261498664a" title=" " alt="" coords="476,5,583,32"/>
+<area shape="rect" id="node5" href="$df/dcd/class_communication_1_1_client.html#a66336ae23ea502a9395010407a952664" title="open_connection Open the connection the serial or network or interface" alt="" coords="444,57,615,98"/>
+</map>

@@ -1,0 +1,8 @@
+<map id="main" name="main">
+<area shape="rect" id="node1" title=" " alt="" coords="5,135,60,162"/>
+<area shape="rect" id="node2" href="$df/dcd/class_communication_1_1_client.html#a66336ae23ea502a9395010407a952664" title="open_connection Open the connection the serial or network or interface" alt="" coords="108,5,279,47"/>
+<area shape="rect" id="node3" href="$d6/d55/classlsl_1_1stream__outlet.html#a675bbe044a5053087e05e0267fe6722a" title=" " alt="" coords="125,95,261,136"/>
+<area shape="rect" id="node4" href="$df/dcd/class_communication_1_1_client.html#a73fec58648938364cd65d690f50bd7ec" title="readS read the com inmterface." alt="" coords="108,160,279,201"/>
+<area shape="rect" id="node6" href="$df/dcd/class_communication_1_1_client.html#a32bd631bcb3b0a3476b146a0cc49332d" title="writeS write the com interface." alt="" coords="108,225,279,267"/>
+<area shape="rect" id="node5" href="$df/dcd/class_communication_1_1_client.html#a7020654cbb2e6f707fe637fc84d8328c" title="CRC Compute and return the CRC over the n first bytes of buf." alt="" coords="327,201,533,227"/>
+</map>

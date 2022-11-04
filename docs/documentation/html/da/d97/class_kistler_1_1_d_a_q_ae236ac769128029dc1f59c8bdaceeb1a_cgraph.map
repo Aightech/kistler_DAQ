@@ -1,0 +1,5 @@
+<map id="Kistler::DAQ::read_measurement" name="Kistler::DAQ::read_measurement">
+<area shape="rect" id="node1" title="Read a subframe as a data frame (type 1 in header)" alt="" coords="5,5,144,47"/>
+<area shape="rect" id="node2" href="$df/dcd/class_communication_1_1_client.html#a73fec58648938364cd65d690f50bd7ec" title="readS read the com inmterface." alt="" coords="192,5,363,47"/>
+<area shape="rect" id="node3" href="$df/dcd/class_communication_1_1_client.html#a7020654cbb2e6f707fe637fc84d8328c" title="CRC Compute and return the CRC over the n first bytes of buf." alt="" coords="411,13,617,39"/>
+</map>

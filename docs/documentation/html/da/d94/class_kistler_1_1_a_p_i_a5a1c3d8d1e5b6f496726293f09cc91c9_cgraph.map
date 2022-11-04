@@ -1,0 +1,11 @@
+<map id="Kistler::API::delete_client" name="Kistler::API::delete_client">
+<area shape="rect" id="node1" title="Unregister a client." alt="" coords="5,64,148,105"/>
+<area shape="rect" id="node2" href="$da/d94/class_kistler_1_1_a_p_i.html#a19649fd0c024f8a66eaff543114532e9" title="Check the satue of the reply (result:0 =&gt; OK)" alt="" coords="210,5,349,47"/>
+<area shape="rect" id="node4" href="$dc/d44/class_e_s_c_1_1_c_l_i.html#abe1e5a3cc2cbd55c0704e9b13842e436" title=" " alt="" coords="439,65,553,91"/>
+<area shape="rect" id="node6" href="$d7/d60/class_communication_1_1_h_t_t_p__client.html#a241e78ccad7bcbc7597cb2dde7d7e402" title=" " alt="" coords="196,123,363,164"/>
+<area shape="rect" id="node3" href="$d2/d52/namespace_e_s_c.html#a080ff5f5b8a2ed3567a541acfa69a425" title="fstr Prints a formated string." alt="" coords="457,13,535,39"/>
+<area shape="rect" id="node5" href="$d2/d52/namespace_e_s_c.html#a1ab0660788056c78944278261498664a" title=" " alt="" coords="679,65,786,91"/>
+<area shape="rect" id="node7" href="$df/dcd/class_communication_1_1_client.html#a73fec58648938364cd65d690f50bd7ec" title="readS read the com inmterface." alt="" coords="411,120,581,161"/>
+<area shape="rect" id="node9" href="$df/dcd/class_communication_1_1_client.html#a32bd631bcb3b0a3476b146a0cc49332d" title="writeS write the com interface." alt="" coords="411,185,581,227"/>
+<area shape="rect" id="node8" href="$df/dcd/class_communication_1_1_client.html#a7020654cbb2e6f707fe637fc84d8328c" title="CRC Compute and return the CRC over the n first bytes of buf." alt="" coords="629,159,836,186"/>
+</map>
