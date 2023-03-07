@@ -8,7 +8,7 @@ DAQ::DAQ(int verbose)
       m_stream(verbose - 1)
 {
     this->connect("192.168.0.100");
-    this->config(2, 10000, 20000000000);
+    this->config(4, 12500, 65000000000);
     this->start_streaming();
 };
 DAQ::~DAQ()
@@ -106,9 +106,9 @@ DAQ::_streaming_thread()
             {
                 total_samples += this->read_measurement(size, &timestamp_s,
                                                         &timestamp_ns, &data);
-                lsl_push_chunk_ft(outlet, data, m_nb_channels * m_frame_size,
-                                  (double)timestamp_s +
-                                      (double)timestamp_ns / 1e9);
+                lsl_push_chunk_ft(outlet, data, m_nb_channels * m_frame_size,0);
+                                  // (double)timestamp_s +
+				  // (double)timestamp_ns / 1e9);
             }
         }
         logln("Total samples: " + std::to_string(total_samples));
