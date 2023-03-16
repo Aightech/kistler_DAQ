@@ -5,17 +5,16 @@ namespace Kistler
 
 DAQ::DAQ(int verbose)
     : ESC::CLI(verbose, "Kistler_DAQ"), m_api(verbose - 1),
-      m_stream(verbose - 1)
-{
-    this->connect("192.168.0.100");
-    this->config(4, 12500, 65000000000);
-    this->start_streaming();
-};
+      m_stream(verbose - 1){
+
+      };
 DAQ::~DAQ()
 {
     if(m_streaming_thread != nullptr)
     {
+        std::cout << "streaming thread joined" << std::endl;
         m_streaming_thread->join();
+        std::cout << "streaming thread deleted" << std::endl;
         delete m_streaming_thread;
     }
 };
@@ -26,19 +25,18 @@ DAQ::connect(std::string ip)
     m_ip = ip;
     logln("Connecting to " + m_ip, true);
     m_api.open_connection(ip, 80); //start the conn. with kistler REST API
-    logln("ok", true);
 };
 
 void
-DAQ::config(uint64_t nb_ch,
+DAQ::config(std::initializer_list<int> channels,
             uint64_t sps,
-            uint64_t dur_ns,
+            int64_t dur_ns,
             uint64_t pre_trig,
             uint64_t post_trig,
             uint16_t f_size,
             int port)
 {
-    m_nb_channels = nb_ch;
+    m_nb_channels = channels.size();
     m_sampling_rate = sps;
     m_measurement_duration = dur_ns;
     m_pre_trig = pre_trig;
@@ -60,6 +58,19 @@ DAQ::config(uint64_t nb_ch,
 
     logln("Configuring DAQ...", true);
 
+    //disable all channels
+    for(int i = 1; i < 5; i++)
+        m_api.set_param("/measChannel/" + std::to_string(i) + "/daq/enabled",
+                        std::to_string(0));
+    //enable the channels in the list
+    for(auto ch : channels)
+        m_api.set_param("/measChannel/" + std::to_string(ch) + "/daq/enabled",
+                        std::to_string(1));
+    log("Channels enabled: {", true);
+    for(auto ch : channels) log(std::to_string(ch) + " ", false);
+    log("\b}", false);
+    logln("");
+
     m_api.set_config(start_trigger, stop_trigger);
 };
 
@@ -75,11 +86,6 @@ DAQ::_streaming_thread()
 {
     try
     {
-        lsl_streaminfo info =
-            lsl_create_streaminfo("Kistler", "measurement", m_nb_channels,
-                                  m_sampling_rate, cft_float32, "Kistleruid");
-        lsl_outlet outlet = lsl_create_outlet(info, m_frame_size, 360);
-
         m_c_id = m_api.new_client();
         m_s_id = m_api.open_stream(m_streaming_port, m_c_id);
         m_stream.open_connection(Communication::Client::Mode::TCP,
@@ -90,32 +96,42 @@ DAQ::_streaming_thread()
         uint32_t size;
         uint64_t timestamp_s;
         uint32_t timestamp_ns;
-        float *data = new float[m_nb_channels * m_frame_size];
+
         int total_samples = 0;
         m_is_streaming = true;
+        //float data[m_nb_channels * m_frame_size];
+        m_data = new float[(m_nb_channels * m_frame_size) * 1];
         logln("Start streaming");
         for(; m_is_streaming;)
         {
             this->read_header(&type, &size);
-            if(type == 0)//it is an event subframe
+            //logln("type: " + std::to_string(type) + " size: " + std::to_string(size));
+            if(type == 0) //it is an event subframe
             {
-                this->read_event(size);
-                break;
+                int code = this->read_event(size);
+                if(code == 0) //CLOSED code
+                    break;
+                else if(code == 1) //OVERRUN code
+                    continue;
+                else if(code == 2) //TIMESKEW code
+                    continue;
+                else if(code == 3) //MEASUREMENT SUBSYSTEM RECONFIGURED
+                    continue;
+                else if(code == 4) //MEASUREMENT STOPPED
+                    break;
             }
-            else// is is a data subframe 
+            else // is is a data subframe
             {
-                total_samples += this->read_measurement(size, &timestamp_s,
-                                                        &timestamp_ns, &data);
-                lsl_push_chunk_ft(outlet, data, m_nb_channels * m_frame_size,0);
-                                  // (double)timestamp_s +
-				  // (double)timestamp_ns / 1e9);
+                total_samples +=
+                    this->read_measurement(size, &timestamp_s, &timestamp_ns);
+                if(m_callback != nullptr)
+                    m_callback(m_nb_channels, m_frame_size, timestamp_s,
+                               timestamp_ns, m_data, m_user_data);
             }
         }
         logln("Total samples: " + std::to_string(total_samples));
-        lsl_destroy_outlet(outlet);
         m_stream.close_connection();
-        m_api.stop();
-        delete[] data;
+        delete[] m_data;
     }
     catch(std::string &msg)
     {
@@ -124,17 +140,18 @@ DAQ::_streaming_thread()
     m_api.close_stream(m_s_id, m_c_id);
     m_api.delete_client(m_c_id);
 };
-  
+
 void
 DAQ::stop_streaming(bool forced)
 {
     m_api.stop(); //send stop request via rest api
     if(forced)
-      m_is_streaming = false;
+        m_is_streaming = false;
     if(m_streaming_thread != nullptr)
     {
         m_streaming_thread->join();
         delete m_streaming_thread;
+        m_streaming_thread = nullptr;
     }
 };
 
@@ -153,14 +170,6 @@ DAQ::read_header(uint16_t *type, uint32_t *size)
 int
 DAQ::read_event(uint32_t size)
 {
-
-    std::string err_description[] = {ESC::fstr("ERROR", {ESC::FG_RED}),
-                                     ESC::fstr("WARNING", {ESC::FG_YELLOW}),
-                                     ESC::fstr("STATUS", {ESC::FG_GREEN}),
-                                     ESC::fstr("INFO", {ESC::FG_BLUE})};
-    std::string code_description[] = {"CLOSED", "OVERRUN", "TIMESKEW",
-                                      "MEASUREMENT SUBSYSTEM RECONFIGURED",
-                                      "MEASUREMENT STOPPED"};
     int n;
     uint8_t buff[size];
     n = m_stream.readS(buff, size);
@@ -170,17 +179,14 @@ DAQ::read_event(uint32_t size)
     //uint8_t *facility = buff + 1;
     uint16_t *code = (uint16_t *)(buff + 2);
 
-    logln("<" + std::string(err_description[*level]) + "> " +
-              std::string(code_description[*code]),
-          true);
+    logln("<" + err_description[*level] + "> " + code_description[*code], true);
     return *code;
 };
 
 uint32_t
 DAQ::read_measurement(uint32_t size,
                       uint64_t *init_timestamp_s,
-                      uint32_t *init_timestamp_ns,
-                      float **data)
+                      uint32_t *init_timestamp_ns)
 {
     int n;
     uint8_t buff[12];
@@ -194,8 +200,8 @@ DAQ::read_measurement(uint32_t size,
 
     //read data
     size -= 12;
-    n = m_stream.readS((uint8_t *)*data, size);
-    while(n < size) n += m_stream.readS((uint8_t *)*data + n, size - n);
+    n = m_stream.readS((uint8_t *)m_data, size);
+    while(n < size) n += m_stream.readS(((uint8_t *)m_data) + n, size - n);
 
     return nb_samples;
 };

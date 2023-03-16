@@ -1,6 +1,19 @@
 # kistler_DAQ
 
 The Kistler API is a C++ library that provides functionality to interface with a Kistler DAQ (Data Acquisition System) device. This library allows the user to connect to the DAQ, configure it, and start streaming data. The data can be streamed to Local Area Network (LAN) using LSL (Lab Streaming Layer) protocol.
+
+## Documentation
+
+You can fin a html version of the doc ![here](docs/API_documentation_5165A4.html)
+The kistler amp also host a debugger tool:
+
+<IP address>/ui/help/api/interactive
+<IP address>/ui/help/api/static/index.html
+<IP address>/ui/help/param-docs/param-docs.html
+
+With <IP address> replace by 192.168.0.100 for example. 
+(set yourself as 192.168,0.100 to ensure NTP sync)
+
 ## How to use
 
 The Kistler_API header file provides a DAQ class which can be used to interface with the Kistler DAQ device. This class contains various methods that allow the user to interact with the device.

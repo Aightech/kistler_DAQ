@@ -32,4 +32,6 @@
 !/.github/*
 !/LICENSE
 !/CONTRIBUTING.md
+!/script
+!/script/*
 

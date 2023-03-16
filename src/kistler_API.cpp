@@ -103,8 +103,8 @@ API::set_param(std::string param, bool value)
 std::string
 API::get_param(std::string param)
 {
-    m_content = "{ \"params\": [\"" + param + "\"] }";
-    std::string rep = this->post("/api/param/get", m_content.c_str());
+    std::string content = "{ \"params\": [\"" + param + "\"] }";
+    std::string rep = this->post("/api/param/get", content.c_str());
     this->check_msg_error(rep);
     std::string key = "\"" + param + "\":";
     std::string value = rep.substr(rep.find(key + "\"") + key.size() + 1);
@@ -116,16 +116,16 @@ void
 API::_set_param(std::string param, std::string field)
 {
     //{"params":[{"name":"/deviceSetup/net/if0/ipv4/static/address","value":"192.168.123.33"}]}'
-    m_content = "{ \"params\": [ { \"name\": \"" + param;
-    m_content += "\", \"value\": " + field + " } ] }";
-    std::string rep = this->post("/api/param/set", m_content.c_str());
+    std::string content = "{ \"params\": [ { \"name\": \"" + param;
+    content += "\", \"value\": " + field + " } ] }";
+    std::string rep = this->post("/api/param/set", content.c_str());
     this->check_msg_error(rep);
 };
 
 bool
 API::check_msg_error(std::string rep)
 {
-    std::string key = "\"result\": ";
+    std::string key = "\"result\":";
     int res = std::stoi(rep.substr(rep.find(key) + key.size()));
     if(res == 0)
         return false;
@@ -142,12 +142,14 @@ API::check_msg_error(std::string rep)
 void
 API::enable_config(bool enable)
 {
-    m_content = "{ \"measurementId\": " + std::to_string(m_measurement_id);
-    m_content += ", \"enabled\" : ";
-    m_content += (enable ? "true" : "false");
-    m_content += " }";
+    std::string content = "{ \"measurementId\": " + std::to_string(m_measurement_id);
+    content += ", \"enabled\" : ";
+    content += (enable ? "true" : "false");
+    content += " }";
+    logln("Measurement " + (enable?ESC::fstr("ENABLED",{ESC::FG_GREEN}):ESC::fstr("DISABLED",{ESC::FG_YELLOW})), true);
     std::string rep =
-        this->post("/api/daq/measurement/enabled/set", m_content.c_str());
+        this->post("/api/daq/measurement/enabled/set", content.c_str());
+    
     this->check_msg_error(rep);
     
 };
@@ -158,15 +160,18 @@ API::set_config(Trigger &start_trigger, Trigger &stop_trigger)
 
     this->enable_config(false);
 
-    m_content = "{ \"measurementId\": " + std::to_string(m_measurement_id);
-    m_content += ", \"startTrigger\": " + start_trigger.str();
-    m_content += ", \"stopTrigger\": " + stop_trigger.str();
-    m_content += ", \"signalProvider\" : \"daq-provider\""
+    std::string content = "{ \"measurementId\": " + std::to_string(m_measurement_id);
+    content += ", \"startTrigger\": " + start_trigger.str();
+    content += ", \"stopTrigger\": " + stop_trigger.str();
+    content += ", \"signalProvider\" : \"daq-provider\""
                  ", \"enabled\" : true}";
 
-    logln("New configuration: " + m_content, true);
+    logln("New configuration: Measurment ID: " + std::to_string(m_measurement_id), true);
+    logln("                   Start trigger: " + start_trigger.str(), false);
+    logln("                   Stop trigger: " + stop_trigger.str(), false);
+
     std::string rep =
-        this->post("/api/daq/measurement/configuration/set", m_content.c_str());
+        this->post("/api/daq/measurement/configuration/set", content.c_str());
     this->check_msg_error(rep);
 };
 
@@ -190,9 +195,9 @@ API::delete_client(std::string client_id)
     if(client_id == "")
         client_id = m_client_ids[m_client_ids.size() - 1];
 
-    m_content = "{ \"clientId\": \"" + client_id + "\" }";
+    std::string content = "{ \"clientId\": \"" + client_id + "\" }";
     std::string rep =
-        this->post("/api/daq/stream/unregister", m_content.c_str());
+        this->post("/api/daq/stream/unregister", content.c_str());
     this->check_msg_error(rep);
     logln("Client " + client_id + " deleted", true);
 };
@@ -203,17 +208,21 @@ API::open_stream(int port, std::string client_id, int frame_size)
     if(client_id == "")
         client_id = m_client_ids[m_client_ids.size() - 1];
 
-    m_content = "{ \"measurements\": [ { \"measurementId\":1,";
-    m_content += "\"scansPerFrame\": " + std::to_string(frame_size) + " } ],";
-    m_content += "\"port\": " + std::to_string(port) + ", ";
-    m_content += " \"clientId\": \"" + client_id + "\" }";
-    logln("New stream: " + m_content);
-    std::string rep = this->post("/api/daq/stream/open", m_content.c_str());
+    std::string content = "{ \"measurements\": [ { \"measurementId\":1,";
+    content += "\"scansPerFrame\": " + std::to_string(frame_size) + " } ],";
+    content += "\"port\": " + std::to_string(port) + ", ";
+    content += " \"clientId\": \"" + client_id + "\" }";
+    logln("New stream: Measurement ID: " + std::to_string(m_measurement_id), true);
+    logln("            Port: " + std::to_string(port), false);
+    logln("            Client ID: " + client_id, false);
+    logln("            Frame size: " + std::to_string(frame_size), false);
+
+    std::string rep = this->post("/api/daq/stream/open", content.c_str());
     this->check_msg_error(rep);
     std::string key = "\"streamId\" : ";
     int streamId = std::stoi(rep.substr(rep.find(key) + key.size()));
     m_stream_ids.push_back(streamId);
-    logln("New stream id: " + std::to_string(streamId), true);
+    logln("            New stream id: " + std::to_string(streamId));
     return streamId;
 };
 
@@ -225,9 +234,9 @@ API::close_stream(int streamId = -1, std::string client_id)
     if(client_id == "")
         client_id = m_client_ids[m_client_ids.size() - 1];
 
-    m_content = "{ \"clientId\": \"" + client_id + "\",";
-    m_content += "\"streamId\": " + std::to_string(streamId) + " }";
-    std::string rep = this->post("/api/daq/stream/close", m_content.c_str());
+    std::string content = "{ \"clientId\": \"" + client_id + "\",";
+    content += "\"streamId\": " + std::to_string(streamId) + " }";
+    std::string rep = this->post("/api/daq/stream/close", content.c_str());
     this->check_msg_error(rep);
     logln("Close stream id: " + std::to_string(streamId), true);
 };
@@ -235,9 +244,9 @@ API::close_stream(int streamId = -1, std::string client_id)
 void
 API::start()
 {
-    m_content = "{ \"measurementId\": 1}";
+    std::string content = "{ \"measurementId\": 1}";
     std::string rep =
-        this->post("/api/daq/measurement/start", m_content.c_str());
+        this->post("/api/daq/measurement/start", content.c_str());
     this->check_msg_error(rep);
     logln("Started measurement stream (via API)", true);
 };
@@ -245,9 +254,9 @@ API::start()
 void
 API::stop()
 {
-    m_content = "{ \"measurementId\": 1}";
+    std::string content = "{ \"measurementId\": 1}";
     std::string rep =
-        this->post("/api/daq/measurement/stop", m_content.c_str());
+        this->post("/api/daq/measurement/stop", content.c_str());
     logln("Stoped measurement stream (via API)", true);
 };
 

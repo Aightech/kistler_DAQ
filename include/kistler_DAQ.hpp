@@ -3,7 +3,6 @@
 
 #include "kistler_API.hpp"
 #include <cstring>
-#include <lsl_c.h>
 #include <thread>
 
 namespace Kistler
@@ -34,9 +33,9 @@ class DAQ : virtual public ESC::CLI
      * @param port Port of the streaming socket
      */
     void
-    config(uint64_t nb_ch = 2,
+    config(std::initializer_list<int> channels,
            uint64_t sps = 10000,
-           uint64_t dur_ns = -1,
+           int64_t dur_ns = -1,
            uint64_t pre_trig = 0,
            uint64_t post_trig = 0,
            uint16_t f_size = 1024,
@@ -80,8 +79,19 @@ class DAQ : virtual public ESC::CLI
     uint32_t
     read_measurement(uint32_t size,
                      uint64_t *init_timestamp_s,
-                     uint32_t *init_timestamp_ns,
-                     float **data);
+                     uint32_t *init_timestamp_ns);
+
+    void
+    set_callback(void (*callback)(uint32_t, uint32_t, uint64_t, uint32_t, float *, void*), void *user_data = nullptr)
+    {
+        m_callback = callback;
+        m_user_data = user_data;
+    }
+
+    int nb_channels() { return m_nb_channels; }
+    uint64_t sampling_rate() { return m_sampling_rate; }
+    uint64_t measurement_duration() { return m_measurement_duration; }
+    int frame_size() { return m_frame_size; }
 
     private:
     std::string m_ip;
@@ -98,6 +108,19 @@ class DAQ : virtual public ESC::CLI
     int m_s_id;
     bool m_is_streaming = false;
     std::thread *m_streaming_thread = nullptr;
+
+    //callback when data is received
+    void (*m_callback)(uint32_t, uint32_t, uint64_t, uint32_t, float *, void*) = nullptr;//callback when data is received (nb_channel, nb_sample/channel, timestamp_s, timestamp_ns, data, user_data)
+    void *m_user_data = nullptr;
+
+    std::string err_description[4] = {ESC::fstr("ERROR", {ESC::FG_RED}),
+                                     ESC::fstr("WARNING", {ESC::FG_YELLOW}),
+                                     ESC::fstr("STATUS", {ESC::FG_GREEN}),
+                                     ESC::fstr("INFO", {ESC::FG_BLUE})};
+    std::string code_description[5] = {"CLOSED", "OVERRUN", "TIMESKEW",
+                                      "MEASUREMENT SUBSYSTEM RECONFIGURED",
+                                      "MEASUREMENT STOPPED"};
+    float* m_data;//[16384];
 };
 
 }; // namespace Kistler
