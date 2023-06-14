@@ -24,7 +24,8 @@ DAQ::connect(std::string ip)
 {
     m_ip = ip;
     logln("Connecting to " + m_ip, true);
-    m_api.open_connection(ip, 80); //start the conn. with kistler REST API
+    m_api.open_connection(ip.c_str(), 80,
+                          2); //start the conn. with kistler REST API
 };
 
 void
@@ -88,8 +89,7 @@ DAQ::_streaming_thread()
     {
         m_c_id = m_api.new_client();
         m_s_id = m_api.open_stream(m_streaming_port, m_c_id);
-        m_stream.open_connection(Communication::Client::Mode::TCP,
-                                 "192.168.0.100", m_streaming_port);
+        m_stream.open_connection("192.168.0.100", m_streaming_port, 2);
         m_api.start();
 
         uint16_t type;

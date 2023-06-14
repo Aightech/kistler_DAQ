@@ -81,17 +81,19 @@ else ()
   ###### C++ standard ######
   set(CMAKE_CXX_STANDARD 11)
   set(CMAKE_CXX_STANDARD_REQUIRED True)
-  
 
+
+
+  
   ###### Get the sources and headers ######
   ###### Exec main src file ######
-  set(MAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
+  file(GLOB MAIN_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/main*") 
   ###### Exec-only header file ######
   set(EXTRA_HEADERS "include/gnuplot-iostream.h")
 
   ###### Library src and headezr files (everything else) ######
   file(GLOB LIB_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" "src/*.c")
-  list(REMOVE_ITEM LIB_SRCS ${MAIN_FILE})
+  list(REMOVE_ITEM LIB_SRCS ${MAIN_FILES})
   file(GLOB LIB_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h" "include/*.hpp")
   list(REMOVE_ITEM LIB_HEADERS ${EXTRA_HEADERS})
 
@@ -113,7 +115,16 @@ else ()
   endif()
 
   
-
+  ###### SFML libraries ######
+  if(1)
+    find_package(SFML REQUIRED COMPONENTS graphics window system )
+    if (SFML_FOUND)
+      list(APPEND EXTRA_LIBS "sfml-graphics" "sfml-window" "sfml-system")
+      message("${PREFIX_MSG}-- ${ColourBold}${Esc}[${color_code}m${EXEC_NAME}${ColourReset} SFML libraries found")
+    else ()
+      message("${PREFIX_MSG}-- ${ColourBold}${Esc}[${color_code}m${EXEC_NAME}${ColourReset} SFML libraries not found")
+    endif (SFML_FOUND)
+  endif()
 
   ###### Search for Subdirectories/Libraries ######
   if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/lib")
@@ -172,17 +183,27 @@ else ()
     PUBLIC ${EXTRA_LIBS})
   target_include_directories(${LIB_NAME}
     PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    PUBLIC "${EXTRA_HEADERS}"
     )
 
 
 
   ###### Create the executable ######
-  add_executable(${EXEC_NAME} ${MAIN_FILE})
-  target_link_libraries (${EXEC_NAME}
-    PUBLIC ${LIB_NAME}
-    PUBLIC ${TOOL_LIBS})
-  target_include_directories(${EXEC_NAME}
-    PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+  #for each main file
+  foreach(MAIN_FILE ${MAIN_FILES})
+    #the name of the executable is the name of the project + the main file (without the "main" and extension)
+    get_filename_component(EXEC_NAME ${MAIN_FILE} NAME_WE)
+    #replace main with the project name
+    string(REPLACE "main" ${PROJECT_NAME} EXEC_NAME ${EXEC_NAME})
+    message("${PREFIX_MSG}-- ${ColourBold}${Esc}[${color_code}m${EXEC_NAME}${ColourReset} will be built")
+    add_executable(${EXEC_NAME} ${MAIN_FILE})
+    target_link_libraries (${EXEC_NAME}
+      PUBLIC ${LIB_NAME}
+      PUBLIC ${TOOL_LIBS})
+    target_include_directories(${EXEC_NAME}
+      PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+    
+  endforeach()
 
 
 

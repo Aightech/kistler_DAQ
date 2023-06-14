@@ -12,7 +12,7 @@ namespace Kistler
  * @brief Object to handle the communication with the Kistler REST API
  *
  */
-class API : public Communication::HTTP_client
+class API : public Communication::HTTP
 {
     public:
     /**

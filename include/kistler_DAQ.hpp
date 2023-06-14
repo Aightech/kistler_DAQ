@@ -103,7 +103,7 @@ class DAQ : virtual public ESC::CLI
     int m_streaming_port = 5000;
     int m_frame_size = 1024;
     API m_api;
-    Communication::Client m_stream;
+    Communication::TCP m_stream;
     std::string m_c_id;
     int m_s_id;
     bool m_is_streaming = false;

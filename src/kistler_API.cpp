@@ -80,7 +80,7 @@ API::Trigger::str()
 };
 
 API::API(int verbose)
-    : ESC::CLI(verbose, "Kistler_API"), Communication::HTTP_client(verbose){};
+    : ESC::CLI(verbose, "Kistler_API"), Communication::HTTP(verbose){};
 
 void
 API::set_param(std::string param, std::string value)
