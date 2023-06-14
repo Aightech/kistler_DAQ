@@ -23,16 +23,18 @@ stream = p.open(format=pyaudio.paFloat32,
 
 # get the data and play it
 ts =0
+i=0
 while True:
     chunk, timestamp = inlet.pull_chunk(1024)
     if(timestamp):
-        print(timestamp[0]-ts)
+        print(i)
+        i=i+1
         
         if timestamp[0] < ts:
             print('timestamp error')
             ts = timestamp[0]
         audio = np.array(chunk, dtype=np.float32).T
-        audio = audio[0,:].copy(order='C'
+        audio = audio[0,:].copy(order='C')
         volume = 0.5  # range [0.0, 1.0]
         audio = (volume * audio).tobytes()
         stream.write(audio)
