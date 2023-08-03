@@ -63,10 +63,15 @@ DAQ::config(std::initializer_list<int> channels,
     for(int i = 1; i < 5; i++)
         m_api.set_param("/measChannel/" + std::to_string(i) + "/daq/enabled",
                         std::to_string(0));
+    logln("Channels disabled", true);
     //enable the channels in the list
     for(auto ch : channels)
+    {
+        logln("Enabling channel " + std::to_string(ch), true);
         m_api.set_param("/measChannel/" + std::to_string(ch) + "/daq/enabled",
                         std::to_string(1));
+    
+    }
     log("Channels enabled: {", true);
     for(auto ch : channels) log(std::to_string(ch) + " ", false);
     log("\b}", false);

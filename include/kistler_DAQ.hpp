@@ -11,7 +11,7 @@ namespace Kistler
 class DAQ : virtual public ESC::CLI
 {
     public:
-    DAQ(int verbose = 3);
+    DAQ(int verbose = -1);
     ~DAQ();
 
     /**
@@ -24,7 +24,7 @@ class DAQ : virtual public ESC::CLI
 
     /**
      * @brief Configure the DAQ
-     * @param nb_ch Number of channels to be recorded
+     * @param channels List of channels to be recorded
      * @param sps Sampling rate
      * @param dur_ns Duration of the recording in nanoseconds
      * @param pre_trig Pre-trigger duration in nanoseconds

@@ -116,6 +116,7 @@ void
 API::_set_param(std::string param, std::string field)
 {
     //{"params":[{"name":"/deviceSetup/net/if0/ipv4/static/address","value":"192.168.123.33"}]}'
+    logln("Setting parameter " + param + " to " + field, true);
     std::string content = "{ \"params\": [ { \"name\": \"" + param;
     content += "\", \"value\": " + field + " } ] }";
     std::string rep = this->post("/api/param/set", content.c_str());
