@@ -8,6 +8,7 @@
 #include <atomic>
 #include <mutex>
 
+#include <boost/program_options.hpp>
 
 // callback function to be called when a frame is received
 // this function will push the data to the outlet
@@ -19,37 +20,67 @@ callback(uint32_t nb_channel,
          float *data,
          void *user_data)
 {
-
-    //computer timestamp
-    time_t utc_now = time( NULL );
-    //get utc time in nanoseconds
-    struct timespec ts;
-    clock_gettime(CLOCK_REALTIME, &ts);
-    uint64_t utc_now_ns = ts.tv_nsec;
-    uint64_t diff_last_timestamp_ns = (nb_sample - 1)/12500.*1000000000;
-
-    // std::cout << "timestampC: " << utc_now << "s " << utc_now_ns << "ns"
-    //           << std::endl;
-    // std::cout << "timestampK: " << init_timestamp_s << "s " << init_timestamp_ns+diff_last_timestamp_ns
-    //           << "ns" << std::endl;
-    //print different between computer and kistler timestamp
-    int64_t diffs = (int64_t)utc_now - (int64_t)init_timestamp_s;
-    int64_t diffns = (int64_t)utc_now_ns - init_timestamp_ns + (diffs>0?1000000000:0)-diff_last_timestamp_ns;
-    std::cout << "diff: " << diffns*0.000001 << "ms" << std::endl;
-
-
-    lsl_outlet outlet = (lsl_outlet)user_data;
-    lsl_push_chunk_ft(outlet, data, nb_sample * nb_channel, 0);
+    //display the timestamp of the frame and the value once every 1000 frames
+    static int count = 0;
+    if(count++ % 2 == 0)
+    {
+        printf("\xd[%lf] ( ",
+               init_timestamp_s + init_timestamp_ns * 0.000000001);
+        for(int i = 0; i < nb_channel; i++)
+        {
+            printf("%s%0.3f ", (data[i] < 0) ? "" : " ", data[i]);
+        }
+        printf(")");
+        fflush(stdout);
+    }
+    lsl_outlet *outlet = (lsl_outlet *)user_data;
+    lsl_push_chunk_ft(*outlet, data, nb_sample * nb_channel,
+                      init_timestamp_s + init_timestamp_ns * 0.000000001);
+    //std::cout << "pushed chunk " << nb_sample * nb_channel << std::endl;
 };
 
-
+namespace po = boost::program_options;
 int
 main(int argc, char **argv)
 {
-    Kistler::DAQ *daq = new Kistler::DAQ(4);
-    daq->connect("192.168.0.100");
-    daq->config({1}, 12500,
-                -1); //set the config to stream data until stop signal is sent
+    //set possible arguments
+    po::options_description desc("Allowed options");
+    desc.add_options()("help,h", "produce help message")(
+        "ip,i", po::value<std::string>()->default_value("192.168.0.100"),
+        "set the ip of the DAQ")(
+        "channel_ids,n",
+        po::value<std::vector<int>>()->multitoken()->default_value({1, 2, 3, 4},
+                                                                   "1 2 3 4"),
+        "set the channel to stream")("sampling_rate,s",
+                                     po::value<int>()->default_value(12500),
+                                     "set the sampling rate")(
+        "streaming_time,t", po::value<int>()->default_value(-1),
+        "set the streaming time in nanoseconds. -1 for infinite streaming")(
+        "verbose,v", po::value<int>()->default_value(1), "Verbose level");
+
+    po::variables_map vm;
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::notify(vm);
+
+    if(vm.count("help"))
+    {
+        //print basic usage and description
+        std::cout << "Usage: " << argv[0] << " [options]\n";
+        std::cout << desc << "\n";
+        return 1;
+    }
+
+    int verbose_lvl = vm["verbose"].as<int>();
+    std::string ip = vm["ip"].as<std::string>();
+    std::vector<int> channels = vm["channel_ids"].as<std::vector<int>>();
+    int sampling_rate = vm["sampling_rate"].as<int>();
+    int duration = vm["streaming_time"].as<int>();
+
+    Kistler::DAQ *daq = new Kistler::DAQ(verbose_lvl);
+    daq->connect(ip);
+    daq->config(
+        channels, sampling_rate,
+        duration); //set the config to stream data until stop signal is sent
 
     lsl_streaminfo info =
         lsl_create_streaminfo("Kistler", "measurement", daq->nb_channels(),
@@ -57,12 +88,12 @@ main(int argc, char **argv)
     lsl_outlet outlet = lsl_create_outlet(info, daq->frame_size(), 360);
 
 
+    std::cout << "\n\n## Press enter to stop streaming ##\n" << std::endl;
+
     daq->set_callback(callback, (void *)&outlet);
     daq->start_streaming();
-
     usleep(1000000);
-    
-    std::cout << "\n## Press enter to stop streaming ##" << std::endl;
+
     char c = getchar();
 
     daq->stop_streaming();

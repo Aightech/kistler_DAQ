@@ -22,6 +22,8 @@ class DAQ : virtual public ESC::CLI
     void
     connect(std::string ip = "192.168.0.100");
 
+
+
     /**
      * @brief Configure the DAQ
      * @param channels List of channels to be recorded
@@ -33,7 +35,7 @@ class DAQ : virtual public ESC::CLI
      * @param port Port of the streaming socket
      */
     void
-    config(std::initializer_list<int> channels,
+    config(std::vector<int> channels,
            uint64_t sps = 10000,
            int64_t dur_ns = -1,
            uint64_t pre_trig = 0,

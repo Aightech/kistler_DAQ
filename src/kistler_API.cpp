@@ -104,9 +104,11 @@ std::string
 API::get_param(std::string param)
 {
     std::string content = "{ \"params\": [\"" + param + "\"] }";
+    //logln("Getting parameter " + param, true);
     std::string rep = this->post("/api/param/get", content.c_str());
+    //logln("Response: " + rep, true);
     this->check_msg_error(rep);
-    std::string key = "\"" + param + "\":";
+    std::string key = "value\":";
     std::string value = rep.substr(rep.find(key + "\"") + key.size() + 1);
     value = value.substr(0, value.find("\""));
     return value;

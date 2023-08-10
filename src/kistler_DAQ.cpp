@@ -23,13 +23,14 @@ void
 DAQ::connect(std::string ip)
 {
     m_ip = ip;
-    logln("Connecting to " + m_ip, true);
+    
     m_api.open_connection(ip.c_str(), 80,
                           2); //start the conn. with kistler REST API
+    logln("Connected on: " + m_ip, true);
 };
 
 void
-DAQ::config(std::initializer_list<int> channels,
+DAQ::config(std::vector<int> channels,
             uint64_t sps,
             int64_t dur_ns,
             uint64_t pre_trig,
@@ -45,6 +46,8 @@ DAQ::config(std::initializer_list<int> channels,
     m_frame_size = f_size;
     m_streaming_port = port;
 
+    logln("Configuring DAQ...", true);
+
     // start when start request is sent via start()
     API::Trigger start_trigger = API::Trigger().request();
     API::Trigger stop_trigger;
@@ -57,25 +60,41 @@ DAQ::config(std::initializer_list<int> channels,
     if(post_trig > 0) // time (in ns) to record after the stop trigger
         stop_trigger.postTrigger(post_trig);
 
-    logln("Configuring DAQ...", true);
+    logln("\tSampling: " + std::to_string(sps) + " Hz", true);
+    if(dur_ns > 0)
+        logln("\tDuration: " + std::to_string(dur_ns) + " ns", true);
+    else
+        logln("\tDuration: INFINITE", true);
+    if(pre_trig > 0)
+        logln("\tPre-trigger: " + std::to_string(pre_trig) + " ns", true);
+    if(post_trig > 0)
+        logln("\tPost-trigger: " + std::to_string(post_trig) + " ns", true);
 
     //disable all channels
+    bool status_list[4];
     for(int i = 1; i < 5; i++)
+    {
         m_api.set_param("/measChannel/" + std::to_string(i) + "/daq/enabled",
                         std::to_string(0));
-    logln("Channels disabled", true);
+        status_list[i - 1] = false;
+    }
     //enable the channels in the list
     for(auto ch : channels)
     {
-        logln("Enabling channel " + std::to_string(ch), true);
         m_api.set_param("/measChannel/" + std::to_string(ch) + "/daq/enabled",
                         std::to_string(1));
-    
+        status_list[ch - 1] = true;
     }
-    log("Channels enabled: {", true);
-    for(auto ch : channels) log(std::to_string(ch) + " ", false);
-    log("\b}", false);
-    logln("");
+    for(int i = 1; i < 5; i++)
+    {
+        std::string name =
+            m_api.get_param("/measChannel/" + std::to_string(i) + "/name");
+        std::string staus = (status_list[i - 1])
+                                ? ESC::fstr("ENABLE", {ESC::FG_GREEN})
+                                : ESC::fstr("DISABLE", {ESC::FG_RED});
+        logln("\tChannel " + std::to_string(i) + " [" + name + "] " + staus,
+              true);
+    }
 
     m_api.set_config(start_trigger, stop_trigger);
 };
@@ -106,7 +125,6 @@ DAQ::_streaming_thread()
         m_is_streaming = true;
         //float data[m_nb_channels * m_frame_size];
         m_data = new float[(m_nb_channels * m_frame_size) * 1];
-        logln("Start streaming");
         for(; m_is_streaming;)
         {
             this->read_header(&type, &size);

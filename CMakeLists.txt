@@ -82,7 +82,16 @@ else ()
   set(CMAKE_CXX_STANDARD 11)
   set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-
+if(1)
+  find_package(Boost REQUIRED COMPONENTS system filesystem)
+  if (Boost_FOUND)
+    list(APPEND EXTRA_LIBS ${Boost_LIBRARIES})
+    list(APPEND EXTRA_INCLUDES ${Boost_INCLUDE_DIRS})
+    message("-- Boost library Found")
+  else ()
+    message("Couldn't find Boost library")
+  endif (Boost_FOUND)
+endif()
 
   
   ###### Get the sources and headers ######

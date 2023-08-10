@@ -4,8 +4,8 @@ set(PROJECT_VERSION 1.10)
 ###### Special libraries ######
 set(EXTRA_LIBS "")
 set(TOOL_LIBS "")		
-if(0)
-  set(EXTRA_LIBS "pthread" "util")
+if(1)
+  set(EXTRA_LIBS "boost_program_options")
 endif()
 
 ###### Boost libraries ######
