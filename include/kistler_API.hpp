@@ -61,8 +61,7 @@ class API : public Communication::HTTP
          */
         Trigger &
         time(uint64_t t_s, uint32_t t_ns);
-        ;
-
+        
         /**
          * @brief Set the the duration to record before the trigger
          *

@@ -2,6 +2,17 @@
 
 The Kistler API is a C++ library that provides functionality to interface with a Kistler DAQ (Data Acquisition System) device. This library allows the user to connect to the DAQ, configure it, and start streaming data. The data can be streamed to Local Area Network (LAN) using LSL (Lab Streaming Layer) protocol.
 
+## Requirements
+- CMake
+- To build the example you need to have portaudio lib on you computer.
+```bash
+sudo apt install libasound-dev portaudio19-dev
+```
+- Boost library
+```bash
+sudo apt install libboost-all-dev
+```
+
 ## Documentation
 
 You can fin a html version of the doc ![here](docs/API_documentation_5165A4.html)

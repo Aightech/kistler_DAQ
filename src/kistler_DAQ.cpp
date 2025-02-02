@@ -23,9 +23,15 @@ void
 DAQ::connect(std::string ip)
 {
     m_ip = ip;
-    
-    m_api.open_connection(ip.c_str(), 80,
-                          2); //start the conn. with kistler REST API
+    try
+    {
+        m_api.open_connection(ip.c_str(), 80, 2);
+    }
+    catch(std::string &msg)
+    {
+        // std::cout << msg << std::endl;
+        throw log_error(msg);
+    }
     logln("Connected on: " + m_ip, true);
 };
 
@@ -193,16 +199,18 @@ DAQ::read_header(uint16_t *type, uint32_t *size)
 int
 DAQ::read_event(uint32_t size)
 {
-    int n;
-    uint8_t buff[size];
+    ssize_t n;
+    // uint8_t buff[size];
+    uint8_t *buff = new uint8_t[size];
     n = m_stream.readS(buff, size);
-    while(n < size) n += m_stream.readS(buff + n, size - n);
+    while((uint32_t)n < size) n += m_stream.readS(buff + n, size - n);
 
     uint8_t *level = buff;
     //uint8_t *facility = buff + 1;
     uint16_t *code = (uint16_t *)(buff + 2);
 
     logln("<" + err_description[*level] + "> " + code_description[*code], true);
+    delete[] buff;
     return *code;
 };
 
@@ -211,20 +219,20 @@ DAQ::read_measurement(uint32_t size,
                       uint64_t *init_timestamp_s,
                       uint32_t *init_timestamp_ns)
 {
-    int n;
+    ssize_t n;
     uint8_t buff[12];
     uint32_t nb_samples = (size - 12) / 4 / m_nb_channels;
 
     //read timestamp
     n = m_stream.readS(buff, 12);
-    while(n < 12) n += m_stream.readS(buff + n, 12 - n);
+    while((uint32_t)n < 12) n += m_stream.readS(buff + n, 12 - n);
     *init_timestamp_s = *(uint64_t *)(buff);
     *init_timestamp_ns = *(uint32_t *)(buff + 8);
 
     //read data
     size -= 12;
     n = m_stream.readS((uint8_t *)m_data, size);
-    while(n < size) n += m_stream.readS(((uint8_t *)m_data) + n, size - n);
+    while((uint32_t)n < size) n += m_stream.readS(((uint8_t *)m_data) + n, size - n);
 
     return nb_samples;
 };

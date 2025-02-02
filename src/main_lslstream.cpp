@@ -77,16 +77,23 @@ main(int argc, char **argv)
     int duration = vm["streaming_time"].as<int>();
 
     Kistler::DAQ *daq = new Kistler::DAQ(verbose_lvl);
-    daq->connect(ip);
-    daq->config(
-        channels, sampling_rate,
-        duration); //set the config to stream data until stop signal is sent
+    try
+    {
+        daq->connect(ip);
+        daq->config(
+            channels, sampling_rate,
+            duration); //set the config to stream data until stop signal is sent
+    }
+    catch(std::string &msg)
+    {
+        std::cout << "[MAIN] " << msg << std::endl;
+        return 1;
+    }
 
     lsl_streaminfo info =
         lsl_create_streaminfo("Kistler", "measurement", daq->nb_channels(),
                               daq->sampling_rate(), cft_float32, "Kistleruid");
     lsl_outlet outlet = lsl_create_outlet(info, daq->frame_size(), 360);
-
 
     std::cout << "\n\n## Press enter to stop streaming ##\n" << std::endl;
 
