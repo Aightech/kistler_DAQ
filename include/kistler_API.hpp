@@ -186,7 +186,7 @@ class API : public Communication::HTTP
      * @return int the stream ID
      */
     int
-    open_stream(int port, std::string client_id = "", int frame_size = 1024);
+    open_stream(int* port, std::string client_id = "", int frame_size = 1024);
 
     /**
      * @brief Close a streaming port

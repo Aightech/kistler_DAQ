@@ -206,17 +206,17 @@ API::delete_client(std::string client_id)
 };
 
 int
-API::open_stream(int port, std::string client_id, int frame_size)
+API::open_stream(int* port, std::string client_id, int frame_size)
 {
     if(client_id == "")
         client_id = m_client_ids[m_client_ids.size() - 1];
 
     std::string content = "{ \"measurements\": [ { \"measurementId\":1,";
     content += "\"scansPerFrame\": " + std::to_string(frame_size) + " } ],";
-    content += "\"port\": " + std::to_string(port) + ", ";
+    // content += "\"port\": " + std::to_string(port) + ", ";
     content += " \"clientId\": \"" + client_id + "\" }";
     logln("New stream: Measurement ID: " + std::to_string(m_measurement_id), true);
-    logln("            Port: " + std::to_string(port), false);
+    // logln("            Port: " + std::to_string(port), false);
     logln("            Client ID: " + client_id, false);
     logln("            Frame size: " + std::to_string(frame_size), false);
 
@@ -225,7 +225,10 @@ API::open_stream(int port, std::string client_id, int frame_size)
     std::string key = "\"streamId\" : ";
     int streamId = std::stoi(rep.substr(rep.find(key) + key.size()));
     m_stream_ids.push_back(streamId);
+    key = "\"port\" : ";
+    *port = std::stoi(rep.substr(rep.find(key) + key.size()));
     logln("            New stream id: " + std::to_string(streamId));
+    logln("            New port: " + std::to_string(*port));
     return streamId;
 };
 

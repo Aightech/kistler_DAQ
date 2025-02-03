@@ -8,7 +8,17 @@
 #include <atomic>
 #include <mutex>
 
+#include <csignal>
+
 #include <boost/program_options.hpp>
+#include <atomic>
+
+std::atomic<bool> exitFlag{false};
+
+void handleSignal(int signal) {
+    if (signal == SIGINT)
+        exitFlag = true;
+}
 
 // callback function to be called when a frame is received
 // this function will push the data to the outlet
@@ -22,7 +32,7 @@ callback(uint32_t nb_channel,
 {
     //display the timestamp of the frame and the value once every 1000 frames
     static int count = 0;
-    if(count++ % 2 == 0)
+    if(count++ % 2 == 0 && exitFlag == false)
     {
         printf("\xd[%lf] ( ",
                init_timestamp_s + init_timestamp_ns * 0.000000001);
@@ -95,13 +105,18 @@ main(int argc, char **argv)
                               daq->sampling_rate(), cft_float32, "Kistleruid");
     lsl_outlet outlet = lsl_create_outlet(info, daq->frame_size(), 360);
 
-    std::cout << "\n\n## Press enter to stop streaming ##\n" << std::endl;
+    std::cout << "\n\n## Press Ctrl-C to stop streaming ##\n" << std::endl;
 
     daq->set_callback(callback, (void *)&outlet);
     daq->start_streaming();
-    usleep(1000000);
 
-    char c = getchar();
+    //quit and close the connection when ctrl+c is pressed
+    std::signal(SIGINT, handleSignal);
+
+    while(!exitFlag)
+    {usleep(1000000);}
+
+    std::cout << "\n\n" << std::endl;
 
     daq->stop_streaming();
     delete daq;

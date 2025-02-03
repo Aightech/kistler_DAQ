@@ -5,9 +5,7 @@ namespace Kistler
 
 DAQ::DAQ(int verbose)
     : ESC::CLI(verbose, "Kistler_DAQ"), m_api(verbose - 1),
-      m_stream(verbose - 1){
-
-      };
+      m_stream(verbose - 1) {};
 DAQ::~DAQ()
 {
     if(m_streaming_thread != nullptr)
@@ -118,9 +116,12 @@ DAQ::_streaming_thread()
     try
     {
         m_c_id = m_api.new_client();
-        m_s_id = m_api.open_stream(m_streaming_port, m_c_id);
-        m_stream.open_connection("192.168.0.100", m_streaming_port, 2);
+        m_s_id = m_api.open_stream(
+            &m_streaming_port, m_c_id); //better to let the API choose the port
         m_api.start();
+        //wait for the stream to be opened
+        usleep(1000000);
+        m_stream.open_connection("192.168.0.100", m_streaming_port, 2);
 
         uint16_t type;
         uint32_t size;
@@ -134,7 +135,6 @@ DAQ::_streaming_thread()
         for(; m_is_streaming;)
         {
             this->read_header(&type, &size);
-            //logln("type: " + std::to_string(type) + " size: " + std::to_string(size));
             if(type == 0) //it is an event subframe
             {
                 int code = this->read_event(size);
@@ -205,13 +205,12 @@ DAQ::read_event(uint32_t size)
     n = m_stream.readS(buff, size);
     while((uint32_t)n < size) n += m_stream.readS(buff + n, size - n);
 
-    uint8_t *level = buff;
+    uint8_t level = *buff;
     //uint8_t *facility = buff + 1;
-    uint16_t *code = (uint16_t *)(buff + 2);
-
-    logln("<" + err_description[*level] + "> " + code_description[*code], true);
+    uint16_t code = *(uint16_t *)(buff + 2);
+    logln("<" + err_description[level] + "> " + code_description[code], true);
     delete[] buff;
-    return *code;
+    return code;
 };
 
 uint32_t
@@ -232,7 +231,8 @@ DAQ::read_measurement(uint32_t size,
     //read data
     size -= 12;
     n = m_stream.readS((uint8_t *)m_data, size);
-    while((uint32_t)n < size) n += m_stream.readS(((uint8_t *)m_data) + n, size - n);
+    while((uint32_t)n < size)
+        n += m_stream.readS(((uint8_t *)m_data) + n, size - n);
 
     return nb_samples;
 };
