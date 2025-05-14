@@ -25,6 +25,14 @@ The kistler amp also host a debugger tool:
 With <IP address> replace by 192.168.0.100 for example. 
 (set yourself as 192.168,0.100 to ensure NTP sync)
 
+### Submodules dependencies
+#### libraries
+- [com_client](lib/com_client/README.md)
+#### Tools
+- [built_lsl](tool_lib/built_lsl/README.md)
+- [audio](tool_lib/audio/README.md)
+
+
 ## How to use
 
 The Kistler_API header file provides a DAQ class which can be used to interface with the Kistler DAQ device. This class contains various methods that allow the user to interact with the device.
@@ -82,3 +90,6 @@ When the project have been built, you can run:
 ```
 to get the demonstration app usage.
 
+
+# Contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
